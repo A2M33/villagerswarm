@@ -67,7 +67,8 @@ public class VillagerSwarm implements ModInitializer {
 		ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
 		LEADERS.put(player.getUuid(), radius);
 		int count = pull(player, radius);
-		context.getSource().sendFeedback(() -> Text.literal(count + " villagers are following you"), false);
+		String message = count == 1 ? "1 villager is following you" : count + " villagers are following you";
+		context.getSource().sendFeedback(() -> Text.literal(message), false);
 		return count;
 	}
 
