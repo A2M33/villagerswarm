@@ -6,6 +6,7 @@
   "description": "Every villager around you runs after you and leaps to reach you, on command.",
   "authors": ["A2M33"],
   "license": "MIT",
+  "icon": "assets/villagerswarm/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": ["com.a2m33.villagerswarm.VillagerSwarm"]
