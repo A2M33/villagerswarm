@@ -7,6 +7,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
@@ -44,6 +45,9 @@ public class VillagerSwarm implements ModInitializer {
 
 		ServerTickEvents.END_SERVER_TICK.register(VillagerSwarm::tick);
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> LEADERS.clear());
+		// Without this, every player who ever ran the command stays in the map until the server stops,
+		// and the swarm starts again by itself when they rejoin.
+		ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> LEADERS.remove(handler.getPlayer().getUuid()));
 	}
 
 	public static boolean isLeader(UUID player) {
@@ -89,7 +93,8 @@ public class VillagerSwarm implements ModInitializer {
 		}
 		LEADERS.forEach((uuid, radius) -> {
 			ServerPlayerEntity player = server.getPlayerManager().getPlayer(uuid);
-			if (player != null && !player.isSpectator()) {
+			// A dead player stays in the world until respawn; the swarm picks up again on the new body.
+			if (player != null && player.isAlive() && !player.isSpectator()) {
 				pull(player, radius);
 			}
 		});
