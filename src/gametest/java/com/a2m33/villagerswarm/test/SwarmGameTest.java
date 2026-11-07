@@ -2,6 +2,7 @@ package com.a2m33.villagerswarm.test;
 
 import com.a2m33.villagerswarm.SwarmBehavior;
 import com.a2m33.villagerswarm.VillagerSwarm;
+import com.mojang.authlib.GameProfile;
 import net.fabricmc.fabric.api.entity.FakePlayer;
 import net.fabricmc.fabric.api.gametest.v1.FabricGameTest;
 import net.minecraft.block.Blocks;
@@ -15,6 +16,8 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.UUID;
 
 public class SwarmGameTest implements FabricGameTest {
 	private static final int FLOOR_Y = 1;
@@ -68,7 +71,8 @@ public class SwarmGameTest implements FabricGameTest {
 		VillagerEntity villager = context.spawnEntity(EntityType.VILLAGER, 1, STAND_Y, 1);
 		FakePlayer player = FakePlayer.get(context.getWorld());
 		player.setPosition(context.getAbsolute(new Vec3d(4, STAND_Y, 4)));
-		ServerCommandSource source = player.getCommandSource();
+		// Pin the level so the test does not depend on how the test server ranks a fake player.
+		ServerCommandSource source = player.getCommandSource().withLevel(2);
 		CommandManager commands = context.getWorld().getServer().getCommandManager();
 
 		commands.executeWithPrefix(source, "villagers follow 16");
@@ -78,6 +82,15 @@ public class SwarmGameTest implements FabricGameTest {
 		commands.executeWithPrefix(source, "villagers stop");
 		context.assertFalse(VillagerSwarm.isLeader(player.getUuid()), "player is still a leader");
 		context.assertFalse(villager.getBrain().hasMemoryModule(MemoryModuleType.WALK_TARGET), "villager kept its walk target");
+		context.complete();
+	}
+
+	@GameTest(templateName = EMPTY_STRUCTURE)
+	public void commandsNeedOperator(TestContext context) {
+		FakePlayer player = FakePlayer.get(context.getWorld(), new GameProfile(UUID.randomUUID(), "swarm-guest"));
+		ServerCommandSource source = player.getCommandSource().withLevel(0);
+		context.getWorld().getServer().getCommandManager().executeWithPrefix(source, "villagers follow");
+		context.assertFalse(VillagerSwarm.isLeader(player.getUuid()), "a non-operator started a swarm");
 		context.complete();
 	}
 

@@ -10,7 +10,7 @@ A Fabric mod for Minecraft 1.21.1. Spawn a crowd of villagers, run one command, 
 | `/villagers follow <radius>` | Same, with a radius from 1 to 256 |
 | `/villagers stop` | Releases them |
 
-Villagers you spawn after running the command join in once they're inside the radius. Anyone on the server can run these commands, so keep the mod to worlds you trust.
+Villagers you spawn after running the command join in once they're inside the radius. The commands need operator rights (permission level 2, the same as `/summon`). In singleplayer that means cheats have to be on.
 
 ## Install
 

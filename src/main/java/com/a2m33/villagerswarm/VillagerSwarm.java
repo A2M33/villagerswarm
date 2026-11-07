@@ -24,6 +24,8 @@ public class VillagerSwarm implements ModInitializer {
 	public static final int DEFAULT_RADIUS = 64;
 	private static final int MAX_RADIUS = 256;
 	private static final int TICK_INTERVAL = 4;
+	/** Same level vanilla uses for /summon and /tp, so only operators can move villagers around. */
+	private static final int PERMISSION_LEVEL = 2;
 
 	/** Players the swarm is following, with the radius each one picked. */
 	private static final Map<UUID, Integer> LEADERS = new HashMap<>();
@@ -32,6 +34,7 @@ public class VillagerSwarm implements ModInitializer {
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) ->
 			dispatcher.register(CommandManager.literal("villagers")
+				.requires(source -> source.hasPermissionLevel(PERMISSION_LEVEL))
 				.then(CommandManager.literal("follow")
 					.executes(context -> follow(context, DEFAULT_RADIUS))
 					.then(CommandManager.argument("radius", IntegerArgumentType.integer(1, MAX_RADIUS))
