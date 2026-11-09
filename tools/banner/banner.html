@@ -5,42 +5,50 @@
 <title>Villager Swarm banner</title>
 <link rel="stylesheet" href="tokens.css">
 <link rel="stylesheet" href="banner.css">
+<script src="trace.js"></script>
+<style>
+  .chat { position: absolute; left: 520px; top: 186px; width: 440px; padding: 0 0 18px;
+          background: var(--panel); border: 1px solid var(--line); border-radius: var(--r-panel);
+          font: 400 20px/40px var(--font-code); color: var(--ink); }
+  .chat header { display: flex; align-items: center; gap: 10px; padding: 14px 24px; border-bottom: 1px solid var(--line);
+                 font: 500 15px/1 var(--font); color: var(--ink-2); margin-bottom: 12px; }
+  .chat p { margin: 0 24px; white-space: pre; }
+  .chat .cmd { color: var(--ink-2); }
+  .chat .hit { color: var(--signal-ink); }
+  .chat .gap { height: 14px; }
+  .chat span { display: inline-block; }
+</style>
 </head>
 <body>
 <main class="sheet">
-  <div class="top">
-    <header class="head">
-      <img class="icon" src="icon.png" width="104" height="104" alt="">
-      <div>
-        <h1>Villager Swarm</h1>
-        <p class="sub">A Fabric mod for Minecraft 1.21.1. Run one command and every villager nearby chases you, leaping up ledges to keep up.</p>
-      </div>
-    </header>
-
-    <section class="console" aria-label="Chat">
-      <p class="cmd">/villagers follow 40</p>
-      <p class="reply"><span class="lamp" data-state="live"></span>12 villagers are following you</p>
-    </section>
-  </div>
-
-  <section class="readings">
-    <div class="cell">
-      <p class="reading">6.9<small>blocks/s</small></p>
-      <p class="tag">Villager run speed</p>
-    </div>
-    <div class="cell">
-      <p class="reading">5.6<small>blocks/s</small></p>
-      <p class="tag">A sprinting player, for comparison</p>
-    </div>
-    <div class="cell">
-      <p class="reading">40<small>blocks</small></p>
-      <p class="tag">Follow radius, 1 to 256</p>
-    </div>
-    <div class="cell">
-      <p class="reading">12<small>blocks</small></p>
-      <p class="tag">Leap range toward a higher player</p>
-    </div>
+  <section class="intro">
+    <img class="icon" src="icon.png" alt="">
+    <h1>Villager Swarm</h1>
+    <p class="sub">A Minecraft mod that makes every villager nearby chase you.</p>
+    <p class="meta"><span class="pad" data-state="live"></span>Java · Fabric 1.21.1 · server side</p>
   </section>
+
+  <section class="chat" aria-label="Chat">
+    <header><span class="pad" data-state="ok"></span>Chat</header>
+    <p class="cmd"><span id="t-cmd">/villagers follow 40</span></p>
+    <p class="hit"><span id="t-reply">12 villagers are following you</span></p>
+    <div class="gap"></div>
+    <p class="cmd">/villagers stop</p>
+    <p>Villagers released</p>
+  </section>
+
+  <p class="callout" id="c-radius" style="left:1012px;top:140px;width:196px"><b>Radius in blocks</b>1 to 256, or 64 if left out</p>
+  <p class="callout lit" id="c-swarm" style="left:1012px;top:277px;width:196px"><b>Every villager in range runs to you</b>At 6.9 blocks/s, faster than you sprint, leaping up ledges on the way</p>
 </main>
+<script>
+  // start: just left of the callout title; end: just past the end of the chat line it names
+  const start = id => { const r = document.getElementById(id).getBoundingClientRect(); return [r.left - 10, r.top + 11]; };
+  const after = id => { const r = document.getElementById(id).getBoundingClientRect(); return [r.right + 12, r.top + r.height / 2]; };
+  // wait for the web fonts, or the line ends are measured in the fallback font
+  document.fonts.ready.then(() => traces([
+    [start("c-radius"), after("t-cmd"), { r: 3.5 }],
+    [start("c-swarm"), after("t-reply"), { lit: true, r: 3.5 }],
+  ]));
+</script>
 </body>
 </html>

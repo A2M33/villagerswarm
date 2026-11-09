@@ -1,4 +1,4 @@
-![Villager Swarm banner: the mod icon and name, the chat command /villagers follow 40 answered with "12 villagers are following you", and four readings: villagers run at 6.9 blocks/s against 5.6 for a sprinting player, a 40-block follow radius (1 to 256), and a 12-block leap range toward a higher player.](docs/banner.png)
+![Villager Swarm banner: the mod icon and name next to a chat log. /villagers follow 40 is answered with "12 villagers are following you", and /villagers stop with "Villagers released". One note points at the radius (1 to 256, or 64 if left out), the other at the reply: every villager in range runs to you at 6.9 blocks/s, faster than you sprint.](docs/banner.png)
 
 # Villager Swarm
 
